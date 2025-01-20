@@ -78,7 +78,7 @@ async function getFollowUpQuestions(query) {
         model: "gpt-3.5-turbo",
         messages: [
             { role: "system", content: "You are a search engine which asks follow-up questions to a query." },
-            { role: "user", content: `Generate 5 follow-up questions, without question mark, for: ${query} and make sure the query word exists in the question. Don't add numbering` },
+            { role: "user", content: `Generate 5 follow-up questions about ${query} and make sure the query word exists in the question. Don't add numbering at the beginning.` },
         ],
         max_tokens: 100,
         temperature: 0.7,

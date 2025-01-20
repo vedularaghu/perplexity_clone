@@ -6,22 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perplexity Clone</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Reset Styles */
+        
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #f8fafc, #e7eef5);
             color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
+            padding: 20px;
         }
         
         h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #005bbb;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         form {
@@ -30,57 +39,65 @@
             align-items: center;
             width: 100%;
             max-width: 600px;
-            margin-bottom: 20px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
         
         label {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            text-align: center;
+            font-weight: bold;
         }
         
         input[type="text"] {
             width: 100%;
             padding: 15px;
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: 2px solid #ccc;
             border-radius: 30px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         input[type="text"]:focus {
-            border-color: #0078ff;
+            border-color: #005bbb;
+            box-shadow: 0 0 8px rgba(0, 91, 187, 0.3);
         }
         
         button {
-            margin-top: 15px;
-            padding: 10px 20px;
+            margin-top: 20px;
+            padding: 12px 25px;
             font-size: 1rem;
-            background-color: #0078ff;
+            font-weight: bold;
             color: white;
+            background-color: #005bbb;
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         
         button:hover {
-            background-color: #005bbb;
+            background-color: #003d80;
+            transform: scale(1.05);
         }
         
         .result-section {
             width: 100%;
             max-width: 600px;
             margin-top: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
         }
         
         .result-section h2 {
             font-size: 1.5rem;
+            color: #005bbb;
             margin-bottom: 10px;
         }
         
@@ -101,7 +118,7 @@
         
         .result-section ul li a {
             text-decoration: none;
-            color: #0078ff;
+            color: #005bbb;
         }
         
         .result-section ul li a:hover {
@@ -110,14 +127,26 @@
         
         .followup-question {
             cursor: pointer;
-            color: #0078ff;
+            color: #005bbb;
             text-decoration: underline;
             margin: 5px 0;
             font-size: 0.9rem;
+            transition: color 0.3s ease;
         }
         
         .followup-question:hover {
-            color: #005bbb;
+            color: #003d80;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -148,7 +177,7 @@
                 const response = await fetch('/query', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         query
@@ -174,7 +203,7 @@
                 const response = await fetch('/followup', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         question
