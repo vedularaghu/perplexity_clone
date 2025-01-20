@@ -46,9 +46,9 @@ async function fetchAIResponse(query, context) {
         model: "gpt-3.5-turbo",
         messages: [
             { role: "system", content: "You are a summarization engine." },
-            { role: "user", content: `Write complete summary in approximately 250 words about ${query} from the \n\nContext:\n${context}` },
+            { role: "user", content: `Write a summary in 500 about ${query} from the \n\nContext:\n${context}` },
         ],
-        max_tokens: 350,
+        max_tokens: 500,
         temperature: 0.7,
     };
 
