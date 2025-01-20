@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perplexity Clone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        .result-section {
+            margin-top: 20px;
+        }
+        
+        .followup-question {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+            margin: 5px 0;
+        }
+        
+        .followup-question:hover {
+            color: darkblue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Perplexity Clone</h1>
+    <form id="query-form">
+        <label for="query">Ask anything...</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="results" class="result-section"></div>
+    <div id="followup" class="result-section"></div>
+
+    <script>
+        const queryForm = document.getElementById('query-form');
+        const resultsDiv = document.getElementById('results');
+        const followupDiv = document.getElementById('followup');
+
+        queryForm.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const query = document.getElementById('query').value;
+            resultsDiv.innerHTML = 'Loading...';
+            followupDiv.innerHTML = '';
+
+            try {
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+                } else {
+                    followUpResults(data, resultsDiv, followupDiv);
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        });
+
+        async function fetchFollowup(question) {
+            resultsDiv.innerHTML = `Searching...`;
+            followupDiv.innerHTML = '';
+
+            try {
+                const response = await fetch('/followup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+                } else {
+                    followUpResults(data, resultsDiv, followupDiv);
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        function followUpResults(data, resultsDiv, followupDiv) {
+            resultsDiv.innerHTML = `
+                <h2>${data.question || data.query}</h2>
+                <h3>Answer:</h3>
+                <p>${data.aiResponse}</p>
+                <h3>Sources:</h3>
+                <ul>
+                    ${data.searchResults
+                        .map(
+                            (result) =>
+                                `<li><a href="${result.link}" target="_blank">${result.title}</a>: ${result.snippet}</li>`
+                        )
+                        .join('')}
+                </ul>
+            `;
+
+            followupDiv.innerHTML = '<h3>Related:</h3>';
+            data.followUpQuestions.forEach((question) => {
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('followup-question');
+                questionElement.textContent = question;
+                questionElement.addEventListener('click', () => fetchFollowup(question));
+                followupDiv.appendChild(questionElement);
+            });
+        }
+    </script>
+</body>
+
+</html>
