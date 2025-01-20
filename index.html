@@ -8,22 +8,116 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #0078ff;
+        }
+        
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0078ff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #005bbb;
         }
         
         .result-section {
+            width: 100%;
+            max-width: 600px;
             margin-top: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .result-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .result-section p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        .result-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .result-section ul li {
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .result-section ul li a {
+            text-decoration: none;
+            color: #0078ff;
+        }
+        
+        .result-section ul li a:hover {
+            text-decoration: underline;
         }
         
         .followup-question {
             cursor: pointer;
-            color: blue;
+            color: #0078ff;
             text-decoration: underline;
             margin: 5px 0;
+            font-size: 0.9rem;
         }
         
         .followup-question:hover {
-            color: darkblue;
+            color: #005bbb;
         }
     </style>
 </head>
@@ -32,8 +126,8 @@
     <h1>Perplexity Clone</h1>
     <form id="query-form">
         <label for="query">Ask anything...</label>
-        <input type="text" id="query" name="query" required>
-        <button type="submit">Submit</button>
+        <input type="text" id="query" name="query" placeholder="Type your question here..." required>
+        <button type="submit">Search</button>
     </form>
 
     <div id="results" class="result-section"></div>
@@ -47,7 +141,7 @@
         queryForm.addEventListener('submit', async(e) => {
             e.preventDefault();
             const query = document.getElementById('query').value;
-            resultsDiv.innerHTML = 'Loading...';
+            resultsDiv.innerHTML = '<p>Loading...</p>';
             followupDiv.innerHTML = '';
 
             try {
@@ -73,7 +167,7 @@
         });
 
         async function fetchFollowup(question) {
-            resultsDiv.innerHTML = `Searching...`;
+            resultsDiv.innerHTML = `<p>Searching...</p>`;
             followupDiv.innerHTML = '';
 
             try {
@@ -101,7 +195,6 @@
         function followUpResults(data, resultsDiv, followupDiv) {
             resultsDiv.innerHTML = `
                 <h2>${data.question || data.query}</h2>
-                <h3>Answer:</h3>
                 <p>${data.aiResponse}</p>
                 <h3>Sources:</h3>
                 <ul>
@@ -114,7 +207,7 @@
                 </ul>
             `;
 
-            followupDiv.innerHTML = '<h3>Related:</h3>';
+            followupDiv.innerHTML = '<h3>Related Questions:</h3>';
             data.followUpQuestions.forEach((question) => {
                 const questionElement = document.createElement('div');
                 questionElement.classList.add('followup-question');

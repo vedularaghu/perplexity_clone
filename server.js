@@ -36,7 +36,7 @@ async function fetchAIResponse(query, context) {
     const openAiKey = process.env.OPENAI_API_KEY;
     const url = "https://api.openai.com/v1/chat/completions";
 
-    const contextLimit = 2500;
+    const contextLimit = 3000;
     if (context.length > contextLimit) {
         console.log(`Context too long (${context.length} characters), truncating...`);
         context = context.slice(0, contextLimit);
@@ -45,10 +45,10 @@ async function fetchAIResponse(query, context) {
     const body = {
         model: "gpt-3.5-turbo",
         messages: [
-            { role: "system", content: "You are a search engine." },
-            { role: "user", content: `${query}\n\nContext:\n${context}` },
+            { role: "system", content: "You are a summarization engine." },
+            { role: "user", content: `Write complete summary in approximately 250 words about ${query} from the \n\nContext:\n${context}` },
         ],
-        max_tokens: 200,
+        max_tokens: 350,
         temperature: 0.7,
     };
 
@@ -78,7 +78,7 @@ async function getFollowUpQuestions(query) {
         model: "gpt-3.5-turbo",
         messages: [
             { role: "system", content: "You are a search engine which asks follow-up questions to a query." },
-            { role: "user", content: `Generate 5 follow-up questions for: ${query} and make sure the query word exists in the question` },
+            { role: "user", content: `Generate 5 follow-up questions, without question mark, for: ${query} and make sure the query word exists in the question. Don't add numbering` },
         ],
         max_tokens: 100,
         temperature: 0.7,
